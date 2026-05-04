@@ -1,5 +1,10 @@
 package com.alphamar.morethan;
 
+import org.apache.catalina.Context;
+import org.apache.catalina.connector.Connector;
+import org.jspecify.annotations.NonNull;
+import org.springframework.boot.tomcat.servlet.TomcatServletWebServerFactory;
+import org.springframework.boot.web.server.servlet.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -42,5 +47,25 @@ class SecurityConfiguration {
     @Bean
     PasswordEncoder passwordEncoder () {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    ServletWebServerFactory servletWebServerFactory() {
+        TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory() {
+            @Override
+            protected void postProcessContext(@NonNull Context context) {
+                super.postProcessContext(context);
+            }
+        };
+
+        factory.addAdditionalConnectors(
+                new Connector("org.apache.coyote.http11.Http11NioProtocol") {{
+                    setScheme("http");
+                    setPort(8080);
+                    setSecure(false);
+                    setRedirectPort(8443);
+                }}
+        );
+        return factory;
     }
 }
