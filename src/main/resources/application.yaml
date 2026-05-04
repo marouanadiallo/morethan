@@ -1,0 +1,17 @@
+server:
+  ssl:
+    bundle: morethanapp
+  port: ${PORT:8443}
+
+
+spring:
+  application:
+    name: morethan
+  ssl:
+    bundle:
+      jks:
+        morethanapp:
+          key.alias: ${KEY_ALIAS:morethan}
+          keystore.location: ${KEY_STORE_PATH:classpath:keystore/morethan.p12}
+          keystore.password: ${KEY_STORE_PASSWORD:p@ssword}
+          keystore.type: ${KEY_STORE_TYPE:PKCS12}
