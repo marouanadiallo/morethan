@@ -1,0 +1,66 @@
+package lu.pgd.dri.saga.service.impl;
+
+import lu.pgd.dri.saga.dto.component.ComponentCount;
+import lu.pgd.dri.saga.dto.component.ComponentSubElementCount;
+import lu.pgd.dri.saga.repository.ComponentAttachmentRepository;
+import lu.pgd.dri.saga.repository.ComponentMoralPersonRepository;
+import lu.pgd.dri.saga.repository.ComponentPhysicalPersonRepository;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class ComponentSubElementCounterImplTest {
+
+    @Mock ComponentMoralPersonRepository moralPersonRepo;
+    @Mock ComponentPhysicalPersonRepository componentPhysicalPersonRepo;
+    @Mock ComponentAttachmentRepository componentAttachmentRepo;
+
+    @InjectMocks ComponentSubElementCounterImpl counter;
+
+    @Test
+    void shouldReturnEmptyMap_andNotQueryDb_whenIdsEmpty() {
+        Map<Long, ComponentSubElementCount> result = counter.getSubElementsCount(List.of());
+
+        assertThat(result).isEmpty();
+        verifyNoInteractions(moralPersonRepo, componentPhysicalPersonRepo, componentAttachmentRepo);
+    }
+
+    @Test
+    void shouldAggregateCounts_andDefaultMissingToZero() {
+        List<Long> ids = List.of(1L, 2L, 3L);
+        when(moralPersonRepo.countByComponentIds(ids))
+            .thenReturn(List.of(new ComponentCount(1L, 2L), new ComponentCount(2L, 5L)));
+        when(componentPhysicalPersonRepo.countByComponentIds(ids))
+            .thenReturn(List.of(new ComponentCount(1L, 3L)));
+        when(componentAttachmentRepo.countByComponentIds(ids))
+            .thenReturn(List.of(new ComponentCount(2L, 4L)));
+
+        Map<Long, ComponentSubElementCount> result = counter.getSubElementsCount(ids);
+
+        assertThat(result).containsExactlyInAnyOrderEntriesOf(Map.of(
+            1L, new ComponentSubElementCount(2, 3, 0),
+            2L, new ComponentSubElementCount(5, 0, 4),
+            3L, new ComponentSubElementCount(0, 0, 0)));
+    }
+
+    @Test
+    void shouldNotFail_whenIdsContainDuplicates() {
+        List<Long> ids = List.of(1L, 1L);
+        when(moralPersonRepo.countByComponentIds(ids)).thenReturn(List.of(new ComponentCount(1L, 1L)));
+        when(componentPhysicalPersonRepo.countByComponentIds(ids)).thenReturn(List.of());
+        when(componentAttachmentRepo.countByComponentIds(ids)).thenReturn(List.of());
+
+        Map<Long, ComponentSubElementCount> result = counter.getSubElementsCount(ids);
+
+        assertThat(result).containsExactly(Map.entry(1L, new ComponentSubElementCount(1, 0, 0)));
+    }
+}
