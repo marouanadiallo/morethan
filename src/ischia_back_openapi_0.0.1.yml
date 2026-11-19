@@ -1,0 +1,670 @@
+openapi: "3.0.3"
+info:
+  title: Swagger ISCHIA Back
+  version: "1.0"
+  description: ISCHIA Back API Contract |-
+    - [OpenAPI 3.2 Specification](https://spec.openapis.org/oas/v3.2.0.html)
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: https://api.server.test/v1
+# DTO Objects
+components:
+  schemas:
+    DashboardMessage: # A simple message object for dashboard data table rows
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        direction:
+          type: string
+        subject:
+          type: string
+        hasAttachments:
+          type: boolean
+          description: Indicates if the message has attachments.
+        channelId:
+          type: integer
+          format: int64
+        driReference:
+          type: string
+        sender: 
+          type: string
+        recipients:
+          type: array
+          items:
+            type: string
+        typeId:
+          type: integer
+          format: int64
+        statusId:
+          type: integer
+          format: int64
+        stateId:
+          type: integer
+          format: int64
+        priorityId:
+          type: array
+          items:
+            type: integer
+            format: int64
+        case:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            messageNumber:
+              type: integer
+              format: int64
+            categoryId:
+              type: integer
+              format: int64
+        timeRemaining:
+          type: boolean
+          description: Indicates if there is time remaining for the message.
+        receivedAt:
+          type: string
+          format: date-time
+          description: The received timestamp of the message.
+    MessageDetails: # Detailed information about a message
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The unique identifier of the message.
+        parentReferenceId:
+          type: integer
+          format: int64
+          description: The reference ID of the parent message, if applicable.
+        direction:
+          type: string
+          description: The direction of the message (e.g., inbound or outbound).
+        driReference:
+          type: string
+          description: The DRI reference of the message.
+        subject:
+          type: string
+          description: The subject of the message.
+        sender:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+              description: The unique identifier of the sender.
+            name:
+              type: string
+              description: The name of the sender.
+          description: The sender of the message.
+        body:
+          type: string
+          description: The content of the message.
+        case:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+              description: The unique identifier of the case.
+            messageNumber:
+              type: integer
+              format: int64
+              description: The message number associated with the case.
+            categoryId:
+              type: integer
+              format: int64
+              description: The category identifier of the case.
+        statusId:
+          type: integer
+          format: int64
+          description: The status identifier of the message.
+        type:
+          type: integer
+          format: int64
+          description: The type identifier of the message.
+        stateId:
+          type: integer
+          format: int64
+          description: The state identifier of the message.
+        channelId:
+          type: integer
+          format: int64
+          description: The channel identifier of the message.
+        confidentialityId:
+          type: integer
+          format: int64
+          description: The confidentiality level of the message.
+        priorityId:
+          type: integer
+          format: int64
+          description: The priority level of the message.
+        reliabilityId:
+          type: integer
+          format: int64
+          description: The reliability level of the message.
+        handlingCodeId:
+          type: integer
+          format: int64
+          description: The handling code identifier of the message.
+        crimeAreaId:
+          type: integer
+          format: int64
+          description: The crime area identifier associated with the message.
+        recipients:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int64
+                description: The unique identifier of the recipient.
+              name:
+                type: string
+                description: The name of the recipient.
+              isCC:
+                type: boolean
+                description: Indicates if the recipient is a CC (carbon copy) recipient.
+          description: The recipients of the message.
+        assignedTo:
+          type: object
+          properties:
+            units:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    description: The unique identifier of the unit.
+                  name:
+                    type: string
+                    description: The name of the unit.
+              description: The units assigned to the message.
+            users:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    description: The unique identifier of the user.
+                  name:
+                    type: string
+                    description: The name of the user.
+                  unitId:
+                    type: integer
+                    format: int64
+                    description: The unique identifier of the unit the user belongs to.
+                  email:
+                    type: string
+                    description: The email of the user.
+                  role:
+                    type: string
+                    description: The role of the user.
+              description: The users assigned to the message.    
+        attachments:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int64
+                description: The unique identifier of the attachment.
+              uuid:
+                type: string
+                format: uuid
+              name:
+                type: string
+                description: The name of the attachment.
+              contentType:
+                type: string
+                description: The MIME type of the attachment.
+              size:
+                type: integer
+                description: The size of the attachment in bytes.
+              url:
+                type: string
+                description: The URL to access the attachment.
+        comments:
+          type: array
+          items:
+            type: object
+            properties:
+              author:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    description: The unique identifier of the author.
+                  name:
+                    type: string
+                    description: The name of the author.
+                description: The author of the comment.
+              content:
+                type: string
+                description: The content of the comment.
+              createdAt:
+                type: string
+                format: date-time
+                description: The timestamp when the comment was created.
+        receivedAt:
+          type: string
+          format: date-time
+          description: The timestamp when the message was received.
+        remainingAt:
+          type: string
+          format: date-time
+          description: The timestamp when the message is expected to be processed or handled.
+    MessageRequest:
+      type: object
+      required:
+        - subject
+        - body
+        - confidentialityId
+        - reliabilityId
+        - channelId
+        - recipientIds
+      properties:
+        subject:
+          type: string
+          description: The subject of the message.
+        body:
+          type: string
+          description: The body of the message.
+        channelId:
+          type: integer
+          format: int64
+          description: The unique identifier of the channel.
+        recipientIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: The list of recipient IDs associated with the message.
+        carbonCopyIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: The list of CC recipient IDs associated with the message.
+        handlingCodeIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: The list of handling code IDs associated with the message.
+        crimeAreaId:
+          type: integer
+          format: int64
+          description: The unique identifier of the crime area.
+        confidentialityId:
+          type: integer
+          format: int64
+          description: The unique identifier of the confidentiality.
+        reliabilityId:
+          type: integer
+          format: int64
+          description: The unique identifier of the reliability.
+        assigneeIds:
+          type: object
+          properties:
+            units:
+              type: array
+              items:
+                type: integer
+                format: int64
+              description: The list of unit IDs assigned to the message.
+            users:
+              type: array
+              items:
+                type: integer
+                format: int64
+              description: The list of user IDs assigned to the message.
+        attachmentIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: The list of attachment IDs associated with the message.
+    ProblemDetail: # Details about an HTTP API error
+      type: object
+      description: Details about an HTTP API error.
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI identifying the type of problem.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem.
+        status:
+          type: integer
+          description: The HTTP status code.
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence.
+        instance:
+          type: string
+          description: A URI reference identifying this occurrence of the problem.
+        properties:
+          type: object
+          description: Additional properties for the problem detail.
+          additionalProperties: true
+    PagedModel: # Pagination information for a list of items
+      type: object
+      properties:
+        content:
+          type: array
+          description: Generic object type
+          items: {}
+        page:
+          type: object
+          properties:
+            number:
+              type: integer
+              description: The current page number.
+            size:
+              type: integer
+              description: The number of items per page.
+            totalElements:
+              type: integer
+              description: The total number of items.
+            totalPages:
+              type: integer
+              description: The total number of pages.
+  responses:
+    BadRequest: # Example of a bad request response
+      description: Invalid request parameters.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
+    InternalServerError: # Example of an internal server error response
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
+    NotFound: # Example of a not found response
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
+    ServiceUnavailable: # Example of a service unavailable response
+      description: Service unavailable.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
+
+paths:
+  /api/v1/messages:
+    get:
+      summary: Returns a list of dashboard messages.
+      tags:
+        - Messages
+      parameters:
+        - in: query
+          name: messageNumber
+          schema:
+            type: string
+          description: Filter messages by message number.
+        - in: query
+          name: typeId
+          schema:
+            type: array
+            items:
+              type: integer
+          description: Filter messages by type Ids.
+        - in: query
+          name: priorityId
+          schema:
+            type: array
+            items:
+              type: integer
+          description: Filter messages by priority Ids.
+        - in: query
+          name: statusId
+          schema:
+            type: array
+            items:
+              type: integer
+          description: Filter messages by status Ids.
+        - in: query
+          name: stateId
+          schema:
+            type: array
+            items:
+              type: integer
+          description: Filter messages by state Ids.
+        - in: query
+          name: from
+          schema:
+            type: array
+            items:
+              type: string
+          description: Filter messages by sender.
+        - in: query
+          name: to
+          schema:
+            type: array
+            items:
+              type: string
+          description: Filter messages by recipient.
+        - in: query
+          name: subject
+          schema:
+            type: string
+          description: Filter messages by subject.
+        - in: query
+          name: attachments
+          schema:
+            type: boolean
+          description: Filter messages by whether they have attachments.
+        - in: query
+          name: category
+          schema:
+            type: integer
+            format: int64
+          description: Filter messages by category.
+        - in: query
+          name: direction
+          schema:
+            type: string
+          description: Filter messages by direction.
+        - in: query
+          name: channel
+          schema:
+            type: integer
+          description: Filter messages by channel.
+        - in: query
+          name: driReference
+          schema:
+            type: integer
+            format: int64
+          description: Filter messages by DRI reference.
+        - in: query
+          name: timeRemaining
+          schema:
+            type: array
+            items:
+              type: string
+          description: Filter messages by time remaining.
+        - in: query
+          name: fromAt
+          schema:
+            type: string
+            format: date-time
+          description: Filter messages by the start of the received date range.
+        - in: query
+          name: toAt
+          schema:
+            type: string
+            format: date-time
+          description: Filter messages by the end of the received date range.
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+          description: The page number for pagination.
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 10
+          description: The number of items per page for pagination.
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/PagedModel"
+                  - type: object
+                    properties:
+                      content:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/DashboardMessage"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+  /api/v1/messages/draft:
+    post:
+      summary: Create a new draft message
+      tags:
+        - Messages
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    description: The ID of the draft message.
+                  # Additional default properties for the draft message can be added here.
+          description: Draft message created successfully 
+        "500": { $ref: "#/components/responses/InternalServerError" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+  /api/v1/messages/{id}/upload:
+    post:
+      summary: Upload an attachment to a message
+      tags:
+        - Messages
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the message to upload the attachment to.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - files
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        "200":
+          description: Attachment uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                      description: The ID of the attachment.
+                    uuid:
+                      type: string
+                      format: uuid
+                      description: The UUID of the attachment.
+                    name:
+                      type: string
+                      description: The name of the attachment.
+                    contentType:
+                      type: string
+                      description: The MIME type of the attachment.
+                    size:
+                      type: integer
+                      format: int64
+                      description: The size of the attachment in bytes.
+                    url:
+                      type: string
+                      format: uri
+                      description: The URL to access the attachment.
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+  /api/v1/messages/{id}:
+    get:
+      summary: Get messages details
+      tags:
+        - Messages
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the message to retrieve.
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageDetails"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      summary: Update an existing message
+      tags:
+        - Messages
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the message to update.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MessageRequest"
+      responses:
+        "200":
+          description: Message updated successfully
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }

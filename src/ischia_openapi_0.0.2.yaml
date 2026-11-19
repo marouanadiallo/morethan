@@ -1,0 +1,1143 @@
+openapi: 3.2.0
+info:
+  title: Swagger ISCHIA Service - OpenAPI 3.2
+  description: |-
+    Swagger ISCHIA Service
+    - [OpenAPI 3.2 Specification](https://spec.openapis.org/oas/v3.2.0.html)
+
+  termsOfService: https://swagger.io/terms/
+  contact:
+    email: lilia.tabka@police.etat.lu
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.13
+paths:
+  /v1/messages:
+    get:
+      tags:
+      - messages
+      summary: Search messages and return summary information
+      description: Search messages  
+      operationId: searchMessages
+      parameters:
+      - name: parentId
+        in: query
+        description: Identifier of the parent message.
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: channel
+        in: query
+        description: Identifier of the channel.
+        required: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MessageLight"
+        "400":
+          description: Invalid Request
+        "404":
+          description: Not Found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      tags:
+      - messages
+      summary: Create a message
+      description: Create a new message
+      operationId: CreateMessage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMessage"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "400":
+          description: Invalid Request
+        "404":
+          description: Not Found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /v1/messages/{id}:
+    get:
+      tags:
+      - messages
+      summary: Retrieve a message
+      description: Retrieve a message based on his id  
+      operationId: getMessage
+      parameters:
+      - name: id
+        in: path
+        description: Identifier of the message to return.
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "400":
+          description: Invalid Request
+        "404":
+          description: Not Found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      tags:
+      - messages
+      summary: Update a message
+      description: Update the message
+      operationId: UpdateMessage
+      parameters:
+      - name: id
+        in: path
+        description: Identifier of the message to return.
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Message"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "400":
+          description: Invalid Request
+        "404":
+          description: Not Found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      tags:
+      - messages
+      summary: Modify some fields in a message
+      description: Modify some fields in a message
+      operationId: PatchMessage
+      parameters:
+      - name: id
+        in: path
+        description: Identifier of the message to return.
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchMessage"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "400":
+          description: Invalid Request
+        "404":
+          description: Not Found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /v1/messages/{id}/comments:
+    post:
+      tags:
+      - messages
+      summary: Add a comment on a message
+      description: Add a comment on a message
+      operationId: PostMessageComment
+      parameters:
+      - name: id
+        in: path
+        description: Identifier of the message to return.
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMessageComment"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageComment"
+        "400":
+          description: Invalid Request
+        "404":
+          description: Not Found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /v1/referential/user-unit-type:
+    get:
+      tags:
+      - Referential
+      summary: Retrieve user unit types
+      description: Retrieve the unser unit types.
+      operationId: getUserUnitTypeList
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BaseReferentialDto"
+        "400":
+          description: Invalid Request
+        "404":
+          description: Not Found
+        default:
+          description: Unexpected error
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorResponse'
+  /v1/referential/unit-organisation-type:
+    get:
+      tags:
+      - Referential
+      summary: Retrieve unit organisation types
+      description: Retrieve the unit organisation types.
+      operationId: getUnitOrganisationTypeList
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BaseReferentialDto"
+        "400":
+          description: Invalid Request
+        "404":
+          description: Not Found
+        default:
+          description: Unexpected error
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorResponse'
+  /v1/referential/crime-area-type:
+    get:
+      tags:
+      - Referential
+      summary: Retrieve crime area types
+      description: Retrieve the crime area types.
+      operationId: getCrimeAreaTypeList
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BaseReferentialDto"
+        "400":
+          description: Invalid Request
+        "404":
+          description: Not Found
+        default:
+          description: Unexpected error
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorResponse'     
+  /v1/referential/message-priority-type:
+    get:
+      tags:
+      - Referential
+      summary: Retrieve message priority types
+      description: Retrieve the message priority types.
+      operationId: getMessagePriorityTypeList
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BaseReferentialDto"
+        "400":
+          description: Invalid Request
+        "404":
+          description: Not Found
+        default:
+          description: Unexpected error
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorResponse'      
+  /v1/referential/message-reliability-type:
+    get:
+      tags:
+      - Referential
+      summary: Retrieve message reliability types
+      description: Retrieve the message reliability types.
+      operationId: getMessageReliabilityTypeList
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BaseReferentialDto"
+        "400":
+          description: Invalid Request
+        "404":
+          description: Not Found
+        default:
+          description: Unexpected error
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorResponse'  
+  /v1/referential/message-type:
+    get:
+      tags:
+      - Referential
+      summary: Retrieve message types
+      description: Retrieve the message types.
+      operationId: getMessageTypeList
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BaseReferentialDto"
+        "400":
+          description: Invalid Request
+        "404":
+          description: Not Found
+        default:
+          description: Unexpected error
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorResponse'
+  /v1/referential/message-status-type:
+    get:
+      tags:
+      - Referential
+      summary: Retrieve message status types
+      description: Retrieve the message status types.
+      operationId: getMessageStatusTypeList
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BaseReferentialDto"
+        "400":
+          description: Invalid Request
+        "404":
+          description: Not Found
+        default:
+          description: Unexpected error
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorResponse'
+  /v1/referential/message-confidentiality-type:
+    get:
+      tags:
+      - Referential
+      summary: Retrieve message confidentiality types
+      description: Retrieve the message confidentiality types.
+      operationId: getMessageConfidentialityTypeList
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BaseReferentialDto"
+        "400":
+          description: Invalid Request
+        "404":
+          description: Not Found
+        default:
+          description: Unexpected error
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorResponse'
+  /v1/referential/document-category-type:
+    get:
+      tags:
+      - Referential
+      summary: Retrieve document category types
+      description: Retrieve the document category types.
+      operationId: getDocumentCategoryTypeList
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BaseReferentialDto"
+        "400":
+          description: Invalid Request
+        "404":
+          description: Not Found
+        default:
+          description: Unexpected error
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorResponse'    
+  /v1/referential/nationality-type:
+    get:
+      tags:
+      - Referential
+      summary: Retrieve nationality types
+      description: Retrieve the nationality types.
+      operationId: getNationalityTypeList
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BaseReferentialDto"
+        "400":
+          description: Invalid Request
+        "404":
+          description: Not Found
+        default:
+          description: Unexpected error
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorResponse' 
+  /v1/referential/country-type:
+    get:
+      tags:
+      - Referential
+      summary: Retrieve country types
+      description: Retrieve the country types.
+      operationId: getCountryTypeList
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BaseReferentialDto"
+        "400":
+          description: Invalid Request
+        "404":
+          description: Not Found
+        default:
+          description: Unexpected error
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorResponse'
+  /v1/referential/organisation-type:
+    get:
+      tags:
+      - Referential
+      summary: Retrieve organisation types
+      description: Retrieve the organisation types.
+      operationId: getOrganisationTypeList
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BaseReferentialDto"
+        "400":
+          description: Invalid Request
+        "404":
+          description: Not Found
+        default:
+          description: Unexpected error
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorResponse'                  
+  /v1/referential/channel-type:
+    get:
+      tags:
+      - Referential
+      summary: Retrieve channel types
+      description: Retrieve the channel types.
+      operationId: getChannelTypeList
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BaseReferentialDto"
+        "400":
+          description: Invalid Request
+        "404":
+          description: Not Found
+        default:
+          description: Unexpected error
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    CreateMessage:
+      type: object
+      properties:
+        messageOrigin:
+          type: string
+          example: "IRMA"
+        parentId:
+          type: integer
+          format: int64
+        channel:
+          type: integer
+          format: int64
+        messagePriority:
+          type: integer
+          format: int64
+        messageReliability:
+          type: integer
+          format: int64
+        messageType:
+          type: integer
+          format: int64
+        messageStatus:
+          type: integer
+          format: int64
+        messageSubject:
+          type: string
+        messageBody:
+          type: string
+        recipients:
+          type: array
+          format: int64
+        copyCarbon:
+          type: array
+          format: int64
+        physicalPersons:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonLight'          
+        vehicles:
+          type: array
+          items:
+            $ref: '#/components/schemas/VehicleLight'
+        legalDocuments:
+          type: array
+          items:
+            $ref: '#/components/schemas/LegalDocumentLight'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+        externalReferences:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalReference'
+    CreateMessageComment:
+      type: object
+      properties:
+        content:
+          type: string
+          example: "My comment"
+    MessageLight:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        parentId:
+          type: integer
+          format: int64
+        caseCategory:
+          type: string
+        messageNumber:
+          type: string
+        messageDirection:
+          type: string
+        sender:
+          type: string
+        channel:
+          type: integer
+          format: int64
+        messagePriority:
+          type: integer
+          format: int64
+        messageReliability:
+          type: integer
+          format: int64
+        messageType:
+          type: integer
+          format: int64
+        messageStatus:
+          type: integer
+          format: int64
+        messageSubject:
+          type: string
+        messageBody:
+          type: string
+        receptionDate:
+          type: string
+          format: date-time
+        recipients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recipient'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+        sienaCase:
+          type: object
+          $ref: '#/components/schemas/SienaCase'
+        externalReferences:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalReference'
+    Message:
+      type: object
+      properties:
+        messageId:
+          type: integer
+          format: int64
+        parentMessageId:
+          type: integer
+          format: int64
+        caseCategory:
+          type: string
+        messageNumber:
+          type: string
+        messageDirection:
+          type: string
+        sender:
+          type: string
+        channel:
+          type: integer
+          format: int64
+        messagePriority:
+          type: integer
+          format: int64
+        messageReliability:
+          type: integer
+          format: int64
+        messageType:
+          type: integer
+          format: int64
+        messageStatus:
+          type: integer
+          format: int64
+        messageSubject:
+          type: string
+        messageBody:
+          type: string
+        receptionDate:
+          type: string
+          format: date-time
+        otherCrimesArea:
+          type: string
+        handlingCodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/HandlingCode'
+        h3HandlingCodeJustification:
+          type: string
+        recipients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recipient'
+        physicalPersons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+        legalDocuments:
+          type: array
+          items:
+            $ref: '#/components/schemas/LegalDocument'
+        vehicles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Vehicle'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+        sienaCase:
+          type: object
+          $ref: '#/components/schemas/SienaCase'
+        externalReferences:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalReference'
+    MessageComment:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: "123"
+        author:
+          type: string
+          example: "xttc6907"
+        creationDate:
+          type: string
+          format: date-time
+          example: "2024-01-01T00:00:00Z"
+        content:
+          type: string
+          example: "My comment"
+    PatchMessage:
+      type: object
+      properties:
+        messagePriority:
+          type: integer
+          format: int64
+        messageReliability:
+          type: integer
+          format: int64
+        messageType:
+          type: integer
+          format: int64
+        messageStatus:
+          type: integer
+          format: int64
+        messageSubject:
+          type: string
+        messageBody:
+          type: string
+        recipients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recipient'
+        physicalPersons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+        legalDocuments:
+          type: array
+          items:
+            $ref: '#/components/schemas/LegalDocument'
+        vehicles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Vehicle'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+    HandlingCode:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        code:
+          type: string
+    Recipient:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        isCopyCarbon:
+          type: boolean
+        email:
+          type: string
+    Attachment:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        externalRef:
+          type: string
+        externalBinaryRef:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        updatedBy:
+          type: string
+    VehicleLight:
+      type: object
+      properties:
+        licencePlate:
+          type: string
+        hull:
+          type: string
+        country:
+          type: string
+        firstRegistrationDate:
+          type: string
+          format: date-time
+        category:
+          type: string
+        color:
+          type: string
+        brand:
+          type: string
+        model:
+          type: string
+        remarks:
+          type: string
+    Vehicle:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        licencePlate:
+          type: string
+        hull:
+          type: string
+        country:
+          type: string
+        firstRegistrationDate:
+          type: string
+          format: date-time
+        category:
+          type: string
+        color:
+          type: string
+        brand:
+          type: string
+        model:
+          type: string
+        remarks:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        updatedBy:
+          type: string
+    LegalDocumentLight:
+      type: object
+      properties:
+        documentNumber:
+          type: string
+        documentCategory:
+          type: integer
+          format: int64
+        lastName:
+          type: string
+        firstName:
+          type: string
+        deliveryDate:
+          type: string
+          format: date-time
+        expirationDate:
+          type: string
+          format: date-time
+        nationality:
+          type: integer
+          format: int64
+        remarks:
+          type: string
+    LegalDocument:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        documentNumber:
+          type: string
+        documentCategory:
+          type: integer
+          format: int64
+        lastName:
+          type: string
+        firstName:
+          type: string
+        deliveryDate:
+          type: string
+          format: date-time
+        expirationDate:
+          type: string
+          format: date-time
+        nationality:
+          type: integer
+          format: int64
+        remarks:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        updatedBy:
+          type: string
+    PersonLight:
+      type: object
+      properties:
+        cecimaId:
+          type: integer
+          format: int64
+        revisionId:
+          type: integer
+          format: int64
+        lastName:
+          type: string
+        firstName:
+          type: string
+        birthDay:
+          type: string
+        birthMonth:
+          type: string
+        birthYear:
+          type: string
+    Person:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        cecimaId:
+          type: integer
+          format: int64
+        revisionId:
+          type: integer
+          format: int64
+        lastName:
+          type: string
+        firstName:
+          type: string
+        birthDay:
+          type: string
+        birthMonth:
+          type: string
+        birthYear:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        updatedBy:
+          type: string
+    SienaCase:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        sienaNumber:
+          type: string
+        category:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        updatedBy:
+          type: string
+    ExternalReference:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        externalReference:
+          type: string
+        sourceApplication:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        updatedBy:
+          type: string
+    BaseReferentialDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        code:
+          type: string
+        labelDe:
+          type: string
+        labelFr:
+          type: string
+        labelEn:
+          type: string
+        validityFrom:
+          type: string
+          format: date
+        validityTo:
+          type: string
+          format: date
+        createdAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+        updatedBy:
+          type: string
+    ErrorResponse:
+      type: object
+      description: Generic error response
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Time the error was produced
+          example: "2024-01-01T00:00:00Z"
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code
+        code:
+          type: string
+          description: Stable error code)
+          example: MESSAGE_NOT_FOUND
+        error:
+          type: string
+          description: Localized message (absent for validation errors)
+        message:
+          type: string
+  securitySchemes:
+    bearer: 
+      type: "http"
+      name: "bearer authentication"
+      in: "header"
+      scheme: "bearer"
+      bearerFormat: "JWT"
